@@ -1,13 +1,11 @@
 import React from 'react'
-import logo from './logo.svg';
-import logoHeader from './logoHeader.svg';
+import logo from './assets/logo.svg';
 import './stylesheets/main.css';
-import { Login } from './components/Login';
-import { Profile } from './components/Profile';
-import { Registration } from './components/Registration';
+import { Login } from './pages/Login';
+import { Profile } from './pages/Profile';
+import { Registration } from './pages/Registration';
 import { Map } from './components/Map';
-
-//import Header from './components/header';
+import { Header } from './components/Header';
 
 const PAGES = {
   login: <Login/>,
@@ -25,14 +23,7 @@ export class App extends React.Component {
   }
   render() {
     return <>
-      <header className="header">
-      <img src={ logoHeader } className="loft__logo-header" alt="logo" />
-        <ul className="menu__list">
-          <li className="menu__item"><button onClick={() => {this.navigateTo("login")}} className="menu__link active">Карта</button></li>
-          <li className="menu__item"><button onClick={() => {this.navigateTo("profile")}} className="menu__link">Профиль</button></li>
-          <li className="menu__item"><button onClick={() => {this.navigateTo("registration")}} className="menu__link">Выйти</button></li>
-        </ul>
-      </header>
+      {this.state.currentPage !== "login" && <Header navigate={this.navigateTo}/>}
       <div className="wrapper">
         <div className="loft__wrapper">
           <div className="loft__header">
@@ -41,7 +32,10 @@ export class App extends React.Component {
             </div>
           </div>
           <div className="loft__login">
-            {PAGES[this.state.currentPage]}
+            {this.state.currentPage === 'login' && <Login navigate={this.navigateTo}/>}
+            {this.state.currentPage === 'registration' && <Registration />}
+            {this.state.currentPage === 'map' && <Map />}
+            {this.state.currentPage === 'profile' && <Profile />}
           </div>
         </div>
       </div>
