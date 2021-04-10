@@ -1,8 +1,11 @@
 import React from 'react'
-import { Input } from './../components/Input'
-import { withAuth } from "./../AuthContext";
+import { connect } from 'react-redux'
+import { logOut } from './../actions'
 
-export const Profile = ({navigate}) => {
+import { Input } from './../components/Input'
+import { Card } from './../components/Card';
+
+export const Profile = () => {
   return (
     <form className="profile__form">
       <h2 className="profile__title">Профиль</h2>
@@ -21,12 +24,14 @@ export const Profile = ({navigate}) => {
             </div>
           </div>
         </div>
-        <div className="profile__card">
-        </div>
+        <Card />
       </div>
-      <input type="submit" className="profile__submit" value="Сохранить" onClick={() => {this.navigateTo("map")}} />
+      <input type="submit" className="profile__submit" value="Сохранить" />
     </form>
   )
 }
 
-export const ProfileWithAuth = withAuth(Profile);
+export const ProfileWithConnect = connect(
+  null,
+  { logOut }
+)(Profile);

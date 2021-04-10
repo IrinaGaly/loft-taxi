@@ -1,54 +1,29 @@
 import React from 'react'
-import logo from './assets/logo.svg';
+import PropTypes from "prop-types";
 import './stylesheets/main.css';
-import { LoginWithAuth } from './pages/Login';
-import { ProfileWithAuth } from './pages/Profile';
-import { Registration } from './pages/Registration';
+import { LoginWithConnect } from './pages/Login';
+import { ProfileWithConnect } from './pages/Profile';
+//import { Registration } from './pages/Registration';
 import { Map } from './components/Map';
 import { Header } from './components/Header';
-import { withAuth } from './AuthContext'
-
-const PAGES = {
-  login: (props) => <LoginWithAuth {...props}/>,
-  profile: (props) => <ProfileWithAuth {...props}/>,
-  registration: (props) => <Registration {...props}/>,
-  map: (props) => <Map {...props}/>
-}
-
+import { Sidebar } from './components/Sidebar';
+import { connect } from 'react-redux';
+import { Switch, Route } from "react-router-dom";
+import { PrivateRoute } from "./PrivateRoute";
 export class App extends React.Component {
 
-  state = { currentPage: "login" }
-
-  navigateTo = (page) => {
-    // this.setState({currentPage: page})
-    if (this.props.isLoggedIn) {
-      this.setState({ currentPage: page });
-    } else {
-      this.setState({ currentPage: "login" });
-    }
-  }
   render() {
     return <>
-      {this.state.currentPage !== "login" && <Header navigate={this.navigateTo}/>}
+      { this.props.isLoggedIn === true && <Header /> }
       <div className="wrapper">
         <div className="loft__wrapper">
-          {this.state.currentPage === "registration" && <div className="loft__header">
-            <div className="loft__header-wrapper">
-              <img src={ logo } className="loft__logo" alt="logo" />
-            </div>
-          </div>}
-          {this.state.currentPage === "login" && <div className="loft__header">
-            <div className="loft__header-wrapper">
-              <img src={ logo } className="loft__logo" alt="logo" />
-            </div>
-          </div>}
+        { this.props.isLoggedIn === false && <Sidebar /> }
           <div className="loft__login">
-            {PAGES[this.state.currentPage]({ navigate: this.navigateTo })}
-
-            {/* {this.state.currentPage === 'login' && <LoginWithAuth navigate={this.navigateTo}/>} 
-            {this.state.currentPage === 'registration' && <Registration navigate={this.navigateTo} />}
-            {this.state.currentPage === 'map' && <Map />}
-            {this.state.currentPage === 'profile' && <ProfileWithAuth />} */}
+            <Switch>
+              <Route exact path="/" component={ LoginWithConnect } />
+              <PrivateRoute path="/map" component={ Map } />
+              <PrivateRoute path="/profile" component={ ProfileWithConnect } />
+            </Switch>
           </div>
         </div>
       </div>
@@ -56,4 +31,10 @@ export class App extends React.Component {
   }
 }
 
-export default withAuth(App);
+App.propTypes = {
+  isLoggedIn: PropTypes.bool,
+};
+
+export default connect(
+  state => ({isLoggedIn: state.auth.isLoggedIn})
+)(App);
