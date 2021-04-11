@@ -1,7 +1,8 @@
 import React from 'react'
 import { Input } from './../components/Input'
+import { withAuth } from "./../AuthContext";
 
-export const Profile = () => {
+export const Profile = ({navigate}) => {
   return (
     <form className="profile__form">
       <h2 className="profile__title">Профиль</h2>
@@ -23,7 +24,9 @@ export const Profile = () => {
         <div className="profile__card">
         </div>
       </div>
-      <input type="submit" className="profile__submit" value="Войти" onClick={() => {this.navigateTo("map")}} />
+      <input type="submit" className="profile__submit" value="Сохранить" onClick={() => {this.navigateTo("map")}} />
     </form>
   )
 }
+
+export const ProfileWithAuth = withAuth(Profile);

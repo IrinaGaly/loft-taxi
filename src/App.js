@@ -1,17 +1,18 @@
 import React from 'react'
 import logo from './assets/logo.svg';
 import './stylesheets/main.css';
-import { Login } from './pages/Login';
-import { Profile } from './pages/Profile';
+import { LoginWithAuth } from './pages/Login';
+import { ProfileWithAuth } from './pages/Profile';
 import { Registration } from './pages/Registration';
 import { Map } from './components/Map';
 import { Header } from './components/Header';
+import { withAuth } from './AuthContext'
 
 const PAGES = {
-  login: <Login/>,
-  profile: <Profile/>,
-  registration: <Registration/>,
-  map: <Map/>
+  login: (props) => <LoginWithAuth {...props}/>,
+  profile: (props) => <ProfileWithAuth {...props}/>,
+  registration: (props) => <Registration {...props}/>,
+  map: (props) => <Map {...props}/>
 }
 
 export class App extends React.Component {
@@ -19,23 +20,35 @@ export class App extends React.Component {
   state = { currentPage: "login" }
 
   navigateTo = (page) => {
-    this.setState({currentPage: page})
+    // this.setState({currentPage: page})
+    if (this.props.isLoggedIn) {
+      this.setState({ currentPage: page });
+    } else {
+      this.setState({ currentPage: "login" });
+    }
   }
   render() {
     return <>
       {this.state.currentPage !== "login" && <Header navigate={this.navigateTo}/>}
       <div className="wrapper">
         <div className="loft__wrapper">
-          <div className="loft__header">
+          {this.state.currentPage === "registration" && <div className="loft__header">
             <div className="loft__header-wrapper">
               <img src={ logo } className="loft__logo" alt="logo" />
             </div>
-          </div>
+          </div>}
+          {this.state.currentPage === "login" && <div className="loft__header">
+            <div className="loft__header-wrapper">
+              <img src={ logo } className="loft__logo" alt="logo" />
+            </div>
+          </div>}
           <div className="loft__login">
-            {this.state.currentPage === 'login' && <Login navigate={this.navigateTo}/>}
-            {this.state.currentPage === 'registration' && <Registration />}
+            {PAGES[this.state.currentPage]({ navigate: this.navigateTo })}
+
+            {/* {this.state.currentPage === 'login' && <LoginWithAuth navigate={this.navigateTo}/>} 
+            {this.state.currentPage === 'registration' && <Registration navigate={this.navigateTo} />}
             {this.state.currentPage === 'map' && <Map />}
-            {this.state.currentPage === 'profile' && <Profile />}
+            {this.state.currentPage === 'profile' && <ProfileWithAuth />} */}
           </div>
         </div>
       </div>
@@ -43,4 +56,4 @@ export class App extends React.Component {
   }
 }
 
-export default App;
+export default withAuth(App);

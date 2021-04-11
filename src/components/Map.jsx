@@ -1,14 +1,26 @@
-import React from 'react'
-//import Header from './components/Header'
+import React, { Component } from 'react'
+import mapboxgl from 'mapbox-gl'
 
-export const Map = () => {
-  return (
-    <header className="header">
-      <ul className="menu__list">
-        <li className="menu__item"><button onClick={() => {this.navigateTo("login")}} className="menu__link"></button>Карта</li>
-        <li className="menu__item"><button onClick={() => {this.navigateTo("profile")}} className="menu__link"></button>Профиль</li>
-        <li className="menu__item"><button onClick={() => {this.navigateTo("logout")}} className="menu__link"></button>Выйти</li>
-      </ul>
-    </header>
-  )
+export class Map extends Component {
+  map = null;
+  mapContainer = React.createRef();
+
+  componentDidMount() {
+    mapboxgl.accessToken = "pk.eyJ1IjoiaXJpbmEtZ2FseWdpbmEiLCJhIjoiY2ttczJmeGYyMGRvdzJwcWdmdWJ1M2ViMyJ9.9lG2M0egyw0xQWzaZ8-xUg"
+
+    this.map = new mapboxgl.Map({
+      container: this.mapContainer.current,
+      style: "mapbox://styles/mapbox/streets-v9",
+      center: [30.3056504, 59.9429126],
+      zoom: 10,
+    })
+  }
+  componentWillUnmount() {
+    this.map.remove()
+  }
+  render() {
+    return <div className="map__wrapper">
+      <div data-testid="map" className="map" ref={this.mapContainer} />
+    </div>  
+  }
 }
